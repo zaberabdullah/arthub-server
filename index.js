@@ -12,10 +12,21 @@ import transactionRoutes from "./routes/transactions.js";
 const app = express();
 const PORT = process.env.PORT || 5000;
 
+// Fix: Function দিয়ে check করো
 const allowedOrigins = process.env.CLIENT_URL.split(',');
 
 app.use(cors({
-  origin: allowedOrigins,
+  origin: function (origin, callback) {
+    // Postman বা server-to-server request এর জন্য
+    if (!origin) return callback(null, true);
+    
+    if (allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      console.log('Blocked by CORS:', origin); // Debug এর জন্য
+      callback(null, false);
+    }
+  },
   credentials: true,
 }));
 
@@ -35,5 +46,6 @@ app.use("/api/transactions", transactionRoutes);
 connectDB().then(() => {
   app.listen(PORT, () => {
     console.log(`🚀 Server running → http://localhost:${PORT}`);
+    console.log('Allowed Origins:', allowedOrigins); // এটা add করো debug এর জন্য
   });
 });
