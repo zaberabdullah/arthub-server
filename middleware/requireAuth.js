@@ -13,10 +13,14 @@ export async function requireAuth(req, res, next) {
     if (cookie) headers.cookie = cookie;
     if (token) headers.authorization = `Bearer ${token}`;
 
-    const response = await fetch(
-      `${process.env.CLIENT_URL}/api/auth/get-session`,
-      { headers }
-    );
+const response = await fetch(
+  `${process.env.CLIENT_URL}/api/auth/get-session`,
+  { headers }
+);
+
+const responseText = await response.text();
+console.log("Session response:", responseText);
+const session = JSON.parse(responseText);
 
     const session = await response.json();
     if (!session || !session.user) {
