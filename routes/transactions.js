@@ -80,7 +80,15 @@ router.post("/confirm-purchase", requireAuth, async (req, res) => {
       return res.status(404).json({ error: "Artwork not found." });
     }
     
-    const artist = await db.collection("user").findOne({ _id: new ObjectId(artwork.artistId) });
+let artist = null;
+try {
+  artist = await db.collection("user").findOne({ 
+    $or: [
+      { id: artwork.artistId },
+      { _id: artwork.artistId },
+    ]
+  });
+} catch {}
 
     // STRING hishebe save koro - ObjectId na
     const purchase = {
