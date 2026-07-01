@@ -4,6 +4,11 @@ export async function requireAuth(req, res, next) {
     const authHeader = req.headers.authorization || "";
     const token = authHeader.replace("Bearer ", "");
 
+    
+        console.log("Cookie:", cookie ? "exists" : "empty");
+    console.log("Token:", token ? token.substring(0, 20) : "empty");
+
+
     const headers = {};
     if (cookie) headers.cookie = cookie;
     if (token) headers.authorization = `Bearer ${token}`;
