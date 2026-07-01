@@ -15,7 +15,12 @@ export async function requireAuth(req, res, next) {
       return res.status(401).json({ error: "Invalid session." });
     }
 
-    const user = await db.collection("user").findOne({ id: session.userId });
+   const user = await db.collection("user").findOne({ 
+  $or: [
+    { id: session.userId },
+    { _id: session.userId },
+  ]
+});
 
     if (!user) {
       return res.status(401).json({ error: "User not found." });
